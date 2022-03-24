@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang = "en">
+    <head>
+        <title>IPGeolocation API - jQuery SDK</title>
+        <script src="ipgeolocation.js"></script>
+    </head>
+    <body>
+        <h2 id = "heading1"></h2>
+        <h2 id = "heading2">SDK jQuery</h2>
+        <h2 id = "heading3">SDK jQuery</h2>
+        <h2 id = "heading4">SDK jQuery</h2>
+        <h2 id = "heading5">SDK jQuery</h2>
+        <h2 id = "heading6">SDK jQuery</h2>
+    </body>
+    <script>
+        // On call to IPGeolocation API on each page during a user's visit, API response will be served from sessionStorage after the first page.
+        _ipgeolocation.enableSessionStorage(true);
+
+        var data1 = sessionStorage.getItem("data1");
+        var data2 = sessionStorage.getItem("data2");
+        var data3 = sessionStorage.getItem("data3");
+        var data4 = sessionStorage.getItem("data4");
+        var data5 = sessionStorage.getItem("data5");
+        var data6 = sessionStorage.getItem("data6");
+            
+        if (!data1 || !data2 || !data3 || !data4 || !data5 || !data6) {
+            _ipgeolocation.makeAsyncCallsToAPI(false);
+            // Testing APIs---------------------------------------------------------------------
+            // IPGeolocation-API
+                    //_ipgeolocation.setFields("country_name,country_code2");
+            _ipgeolocation.includeHostname(true);
+            _ipgeolocation.includeSecurity(true);
+            _ipgeolocation.includeUserAgent(true);
+            _ipgeolocation.getGeolocation(handleResponse, "YOUR_API_KEY");
+            
+            //// Timezone-API
+            //_ipgeolocation.setIPAddress("1.1.1.1");
+            //_ipgeolocation.setTimeZone("America/Los_Angeles");
+            //_ipgeolocation.setCoordinates("25.9406805", "50.3073933");
+            //_ipgeolocation.setLocation("Amman, Jordan");
+            //_ipgeolocation.getTimezone(handleResponse, "YOUR_API_KEY");
+            
+            //// UserAgent-API
+            //_ipgeolocation.getUserAgent(handleResponse, "YOUR_API_KEY");
+            //----------------------------------------------------------------------------------
+        }
+
+        function handleResponse(json) {
+            // Testing APIs---------------------------------------------------------------------
+            // IPGeolocation API
+            data1 = json.country_name;
+            data2 = json.currency.symbol;
+            data3 = json.time_zone.name;
+            data4 = json.security.is_proxy;
+            data5 = json.user_agent.name;
+            data6 = json.user_agent.operatingSystem.name;
+                
+            //// Timezone API
+            //data1 = json.geo.country;
+            //data2 = json.timezone;
+            //data3 = json.date_time_txt;
+            //data4 = json.date_time_wti;
+            //data5 = json.date_time_ymd;
+            //data6 = json.year;
+
+            // UserAgent API
+            //data1 = json.userAgentString;
+            //data2 = json.name;
+            //data3 = json.versionMajor;
+            //data4 = json.device.name;
+            //data5 = json.engine.name;
+            //data6 = json.operatingSystem.name;
+            //----------------------------------------------------------------------------------
+
+            sessionStorage.setItem("data1", data1);
+            sessionStorage.setItem("data2", data2);
+            sessionStorage.setItem("data3", data3);
+            sessionStorage.setItem("data4", data4);
+            sessionStorage.setItem("data5", data5);
+            sessionStorage.setItem("data6", data6);
+        }
+
+        document.getElementById("heading1").innerHTML = sessionStorage.getItem("data1");
+        document.getElementById("heading2").innerHTML = sessionStorage.getItem("data2");
+        document.getElementById("heading3").innerHTML = sessionStorage.getItem("data3");
+        document.getElementById("heading4").innerHTML = sessionStorage.getItem("data4");
+        document.getElementById("heading5").innerHTML = sessionStorage.getItem("data5");
+        document.getElementById("heading6").innerHTML = sessionStorage.getItem("data6");
+    
+        $(document).ready(function() {
+            alert("Hello " + country_name + "!");
+        });
+    </script>
+</html>

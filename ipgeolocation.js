@@ -1,6 +1,9 @@
 var _ipgeolocation = function() {
     var useSessionStorage = false;
     var asyncCall = true;
+    var isHostname = false;
+    var isSecurity = false;
+    var isUserAgent = false;
     var ipAddress = "";
     var excludes = "";
     var fields = "";
@@ -8,10 +11,14 @@ var _ipgeolocation = function() {
     var tz = "";
     var latitude = "";
     var longitude = "";
+    var location = "";
     var geolocationEndpoint = "ipgeo";
     var timezoneEndpoint = "timezone";
+    var useragentEndpoint = "user-agent";
     var geolocationResponseName = "_ipgeolocation_geolocation";
     var timezoneResponseName = "_ipgeolocation_timezone";
+    var useragentResponseName = "_ipgeolocation_useragent";
+    
 
     function request(subUrl, callback, apiKey = "") {
         if (useSessionStorage) {
@@ -20,6 +27,9 @@ var _ipgeolocation = function() {
                 return;
             } else if (subUrl == timezoneEndpoint && sessionStorage.getItem(timezoneResponseName) && callback) {
                 callback(JSON.parse(sessionStorage.getItem(timezoneResponseName)));
+                return;
+            } else if (subUrl == useragentEndpoint && sessionStorage.getItem(useragentResponseName) && callback) {
+                callback(JSON.parse(sessionStorage.getItem(useragentResponseName)));
                 return;
             }
         }
@@ -46,7 +56,30 @@ var _ipgeolocation = function() {
         if (excludes) {
             urlParameters = addUrlParameter(urlParameters, "excludes", excludes);
         }
-    
+        
+        if(isHostname || isSecurity || isUserAgent){
+            var val = "";
+            if(isHostname){
+                val = "hostname";
+            }
+            if(isSecurity){
+                if(isHostname){
+                    val = val + ",security";
+                } else{
+                    val = "security";
+                }
+            }
+            if(isUserAgent){
+                if(isHostname || isSecurity){
+                    val = val + ",useragent";
+                } else{
+                    val = "useragent";
+                }
+            }
+            console.log("val: " + val);
+            urlParameters = addUrlParameter(urlParameters, "include", val);
+        }
+        
         if (lang) {
             urlParameters = addUrlParameter(urlParameters, "lang", lang);
         }
@@ -58,6 +91,10 @@ var _ipgeolocation = function() {
         if (latitude && longitude) {
             urlParameters = addUrlParameter(urlParameters, "lat", latitude);
             urlParameters = addUrlParameter(urlParameters, "long", longitude);
+        }
+        
+        if(location){
+            urlParameters = addUrlParameter(urlParameters, "location", location);
         }
 
         var httpRequest;
@@ -108,10 +145,17 @@ var _ipgeolocation = function() {
         makeAsyncCallsToAPI: function(a = true) {
             asyncCall = a;
         },
-        setIPAddress: function(ip = "") {
-            ipAddress = ip;
+        includeHostname: function(h = false) {
+            isHostname = h;
+        },
+        includeSecurity: function(s = false) {
+            isSecurity = s;
+        },
+        includeUserAgent: function(u = false) {
+            isUserAgent = u;
         },
         setFields: function(f = "") {
+            console.log("set");
             fields = f;
         },
         setExcludes: function(e = "") {
@@ -120,18 +164,27 @@ var _ipgeolocation = function() {
         setLanguage: function(l = "en") {
             lang = l;
         },
+        setIPAddress: function(ip = "") {
+            ipAddress = ip;
+        },
         setTimeZone: function(t = "") {
             tz = t;
         },
-        setCoordinates: function(latitude = "", longitude = "") {
-            latitudeParameter = latitude;
-            longitudeParameter = longitude;
+        setCoordinates: function(la = "", lo = "") {
+            latitude = la;
+            longitude = lo;
+        },
+        setLocation: function(loc = "") {
+            location = loc;
         },
         getGeolocation: function(callback, apiKey = "") {
             request(geolocationEndpoint, callback, apiKey);
         },
         getTimezone: function(callback, apikey = "") {
             request(timezoneEndpoint, callback, apikey);
+        },
+        getUserAgent: function(callback, apikey = "") {
+            request(useragentEndpoint, callback, apikey);
         }
-    }
+    };
 }();
