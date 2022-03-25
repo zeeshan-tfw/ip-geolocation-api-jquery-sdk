@@ -2,6 +2,8 @@ var _ipgeolocation = function() {
     var useSessionStorage = false;
     var asyncCall = true;
     var isHostname = false;
+    var isLiveHostname = false;
+    var isHostnameFallbackLive = false;
     var isSecurity = false;
     var isUserAgent = false;
     var ipAddress = "";
@@ -18,7 +20,6 @@ var _ipgeolocation = function() {
     var geolocationResponseName = "_ipgeolocation_geolocation";
     var timezoneResponseName = "_ipgeolocation_timezone";
     var useragentResponseName = "_ipgeolocation_useragent";
-    
 
     function request(subUrl, callback, apiKey = "") {
         if (useSessionStorage) {
@@ -59,24 +60,31 @@ var _ipgeolocation = function() {
         
         if(isHostname || isSecurity || isUserAgent){
             var val = "";
+            var includeHost = false;
             if(isHostname){
                 val = "hostname";
+                includeHost = true;
+            } else if(isHostnameFallbackLive) {
+                val = "hostnameFallbackLive";
+                includeHost = true;
+            } else if(isLiveHostname) {
+                val = "liveHostname";
+                includeHost = true;
             }
             if(isSecurity){
-                if(isHostname){
+                if(includeHost){
                     val = val + ",security";
                 } else{
                     val = "security";
                 }
             }
             if(isUserAgent){
-                if(isHostname || isSecurity){
+                if(includeHost || isSecurity){
                     val = val + ",useragent";
                 } else{
                     val = "useragent";
                 }
             }
-            console.log("val: " + val);
             urlParameters = addUrlParameter(urlParameters, "include", val);
         }
         
@@ -147,6 +155,12 @@ var _ipgeolocation = function() {
         },
         includeHostname: function(h = false) {
             isHostname = h;
+        },
+        includeHostnameFallbackLive: function(h = false) {
+            isHostnameFallbackLive = h;
+        },
+        includeLiveHostname: function(h = false) {
+            isLiveHostname = h;
         },
         includeSecurity: function(s = false) {
             isSecurity = s;

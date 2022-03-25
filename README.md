@@ -26,6 +26,10 @@ You need a valid 'IPGeolocation API key' to use this SDK. [Sign up](https://ipge
 
 Internet connection is required to run this component.
 
+## Documentation
+Use the following URL to visit documentation
+[https://ipgeolocation.io/documentation.html](https://ipgeolocation.io/documentation.html)
+
 ## Installation
 ### CDN Link
 
